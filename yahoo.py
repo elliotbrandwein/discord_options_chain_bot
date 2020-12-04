@@ -8,8 +8,11 @@ def percentager(the_number):
     the_number = round(the_number,4)
     return "{:.2%}".format(the_number)
 
+price_cache = {}
 def ticka_price(ticka):
-    return si.get_live_price(ticka)
+    price = si.get_live_price(ticka)
+    price_cache[ticka] = price
+    return price
 
 def get_middle(chain, ticka):
     stock_price = ticka_price(ticka)

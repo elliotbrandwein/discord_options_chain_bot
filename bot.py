@@ -19,6 +19,7 @@ bot = commands.Bot(command_prefix='>') #change character here
 @bot.command(name='puts')
 async def put_getter(ctx, ticka):
     ascii_table = PrettyTable()
+    price = yahoo.price_cache[ticka]
     data = yahoo.return_puts(ticka)
     data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
     for col in data.columns:
