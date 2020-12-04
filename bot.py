@@ -19,21 +19,34 @@ bot = commands.Bot(command_prefix='>') #change character here
 @bot.command(name='puts')
 async def put_getter(ctx, ticka):
     ascii_table = PrettyTable()
-    price = yahoo.price_cache[ticka]
-    data = yahoo.return_puts(ticka)
-    data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-    for col in data.columns:
-        ascii_table.add_column(col, data[col].to_list())
-    await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+    data = ""
+    try:
+        data = yahoo.return_puts(ticka)
+        data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+        ascii_table.field_names = data.columns
+        for i in range(len(data.index)):
+            if i == 4:
+                ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
+            ascii_table.add_row(data.iloc[i])
+        await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+    except:
+      await ctx.send("There was an error please try again")
+  
 
 @bot.command(name='calls')
 async def call_getter(ctx, ticka):
     ascii_table = PrettyTable()
-    data = yahoo.return_calls(ticka)
-    data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-    for col in data.columns:
-        ascii_table.add_column(col, data[col].to_list())
-    await ctx.send(f"```\n{ascii_table.get_string()}\n```")
-
-
+    data = ""
+    try:
+        data = yahoo.return_calls(ticka)
+        data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+        ascii_table.field_names = data.columns
+        for i in range(len(data.index)):
+            if i == 4:
+                ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
+            ascii_table.add_row(data.iloc[i])
+        await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+    except:
+      await ctx.send("There was an error please try again")
+    
 bot.run(TOKEN)
