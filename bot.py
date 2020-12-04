@@ -23,7 +23,7 @@ async def put_getter(ctx, ticka):
     try:
         data = yahoo.return_puts(ticka)
         if data == []:
-            await ctx.send(f"```\nThere was no weekly options chain for the ticka{ticka}\n```")
+            await ctx.send(f"```\nThere was no weekly options chain for the ticka {ticka}\n```")
         else:
             data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
             ascii_table.field_names = data.columns
@@ -43,7 +43,7 @@ async def call_getter(ctx, ticka):
     try:
         data = yahoo.return_calls(ticka)
         if data == []:
-            await ctx.send(f"```\nThere was no weekly options chain for the ticka{ticka}\n```")
+            await ctx.send(f"```\nThere was no weekly options chain for the ticka {ticka}\n```")
         else:
             data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
             ascii_table.field_names = data.columns
