@@ -20,7 +20,7 @@ bot = commands.Bot(command_prefix='>') #change character here
 async def put_getter(ctx, ticka):
     ascii_table = PrettyTable()
     data = yahoo.return_puts(ticka)
-    data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change'])
+    data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
     for col in data.columns:
         ascii_table.add_column(col, data[col].to_list())
     await ctx.send(f"```\n{ascii_table.get_string()}\n```")
@@ -29,7 +29,7 @@ async def put_getter(ctx, ticka):
 async def call_getter(ctx, ticka):
     ascii_table = PrettyTable()
     data = yahoo.return_calls(ticka)
-    data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change'])
+    data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
     for col in data.columns:
         ascii_table.add_column(col, data[col].to_list())
     await ctx.send(f"```\n{ascii_table.get_string()}\n```")
