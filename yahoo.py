@@ -33,17 +33,26 @@ def puts_chain(ticka):
     puts['profit'] = puts['Last Price'] / puts['Strike']
     return puts
 
-print("please give me a ticka") # will replace with input from bot
-ticka = input()
+def return_puts(ticka):
+    puts = puts_chain(ticka)
+    put_middle = get_middle(puts, ticka)
+    return puts.iloc[put_middle-5:put_middle+5]
 
-calls = calls_chain(ticka)
-puts = puts_chain(ticka)
+def return_calls(ticka):
+    calls = calls_chain(ticka)
+    call_middle = get_middle(calls, ticka)
+    return calls.iloc[call_middle-5:call_middle+5]
 
-call_middle = get_middle(calls, ticka)
-put_middle = get_middle(puts, ticka)
+if __name__ == '__main__':
+    print("please give me a ticka") # will replace with input from bot
+    ticka = input()
 
-return_calls = calls.iloc[call_middle-5:call_middle+5]
-print(return_calls)
+    calls = calls_chain(ticka)
+    puts = puts_chain(ticka)
 
-return_puts = puts.iloc[put_middle-5:put_middle+5]
-print(return_puts)
+    call_middle = get_middle(calls, ticka)
+    put_middle = get_middle(puts, ticka)
+
+    print(calls.iloc[call_middle-5:call_middle+5])
+
+    print(puts.iloc[put_middle-5:put_middle+5])
