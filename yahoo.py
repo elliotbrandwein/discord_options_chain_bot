@@ -56,7 +56,6 @@ def return_puts(ticka):
 
 def return_calls(ticka):
     calls = calls_chain(ticka)
-    print(calls)
     if len(calls) == 0:
         return []
     call_middle = get_middle(calls, ticka)
