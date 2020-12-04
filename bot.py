@@ -51,7 +51,7 @@ async def call_getter(ctx, ticka):
                 if i == 4:
                     ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
                 ascii_table.add_row(data.iloc[i])
-        await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+            await ctx.send(f"```\n{ascii_table.get_string()}\n```")
     except:
       await ctx.send("There was an error please try again")
     

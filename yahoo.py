@@ -39,7 +39,10 @@ def calls_chain(ticka):
     return calls
 
 def puts_chain(ticka):
-    puts = opt.get_puts(ticka,friday())
+    try:
+        puts = opt.get_puts(ticka,friday())
+    except:
+        return []
     puts['profit'] = puts['Last Price'] / puts['Strike']
     return puts
 
@@ -80,7 +83,7 @@ if __name__ == '__main__':
             print(ascii_table.get_string())
 
     elif option == "put":
-        try:
+        # try:
             ascii_table = PrettyTable()
             data = return_puts(ticka)
             if data == []:
@@ -93,7 +96,7 @@ if __name__ == '__main__':
                         ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
                     ascii_table.add_row(data.iloc[i])
                 print(ascii_table.get_string())
-        except:
-            print("ERROR")
+        # except:
+        #     print("ERROR")
     else:
         print("you're an idiot")
