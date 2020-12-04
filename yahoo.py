@@ -48,7 +48,7 @@ def puts_chain(ticka):
 
 def return_puts(ticka):
     puts = puts_chain(ticka)
-    if puts == []:
+    if len(puts) == 0:
         return puts
     put_middle = get_middle(puts, ticka)
     puts['profit'] = puts['profit'].apply(percentager)
@@ -56,8 +56,9 @@ def return_puts(ticka):
 
 def return_calls(ticka):
     calls = calls_chain(ticka)
-    if calls == []:
-        return calls
+    print(calls)
+    if len(calls) == 0:
+        return []
     call_middle = get_middle(calls, ticka)
     calls['profit'] = calls['profit'].apply(percentager)
     return calls.iloc[call_middle-5:call_middle+5]
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     if option == "call":
         ascii_table = PrettyTable()
         data = return_calls(ticka)
-        if data == []:
+        if len(data) == 0:
             print("no calls found for ticka", ticka)
         else:
             data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
@@ -86,7 +87,7 @@ if __name__ == '__main__':
         # try:
             ascii_table = PrettyTable()
             data = return_puts(ticka)
-            if data == []:
+            if len(data) == 0:
                 print("no puts found for ticka", ticka)
             else:
                 data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
