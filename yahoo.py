@@ -31,7 +31,10 @@ def friday():
     return today + dt.timedelta((4 - today.weekday()) % 7)
 
 def calls_chain(ticka):
-    calls = opt.get_calls(ticka,friday()) 
+    try:
+        calls = opt.get_calls(ticka,friday())
+    except: 
+        return [] 
     calls['profit'] = calls['Last Price'] / calls['Strike']
     return calls
 
@@ -42,12 +45,16 @@ def puts_chain(ticka):
 
 def return_puts(ticka):
     puts = puts_chain(ticka)
+    if puts == []:
+        return puts
     put_middle = get_middle(puts, ticka)
     puts['profit'] = puts['profit'].apply(percentager)
     return puts.iloc[put_middle-5:put_middle+5]
 
 def return_calls(ticka):
     calls = calls_chain(ticka)
+    if calls == []:
+        return calls
     call_middle = get_middle(calls, ticka)
     calls['profit'] = calls['profit'].apply(percentager)
     return calls.iloc[call_middle-5:call_middle+5]
@@ -61,23 +68,32 @@ if __name__ == '__main__':
     if option == "call":
         ascii_table = PrettyTable()
         data = return_calls(ticka)
-        data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-        ascii_table.field_names = data.columns
-        for i in range(len(data.index)):
-            if i == 4:
-                ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
-            ascii_table.add_row(data.iloc[i])
-        print(ascii_table.get_string())
+        if data == []:
+            print("no calls found for ticka", ticka)
+        else:
+            data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+            ascii_table.field_names = data.columns
+            for i in range(len(data.index)):
+                if i == 4:
+                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
+                ascii_table.add_row(data.iloc[i])
+            print(ascii_table.get_string())
 
     elif option == "put":
-        ascii_table = PrettyTable()
-        data = return_puts(ticka)
-        data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-        ascii_table.field_names = data.columns
-        for i in range(len(data.index)):
-            if i == 4:
-                ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
-            ascii_table.add_row(data.iloc[i])
-        print(ascii_table.get_string())
+        try:
+            ascii_table = PrettyTable()
+            data = return_puts(ticka)
+            if data == []:
+                print("no puts found for ticka", ticka)
+            else:
+                data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+                ascii_table.field_names = data.columns
+                for i in range(len(data.index)):
+                    if i == 4:
+                        ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
+                    ascii_table.add_row(data.iloc[i])
+                print(ascii_table.get_string())
+        except:
+            print("ERROR")
     else:
         print("you're an idiot")

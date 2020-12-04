@@ -22,13 +22,16 @@ async def put_getter(ctx, ticka):
     data = ""
     try:
         data = yahoo.return_puts(ticka)
-        data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-        ascii_table.field_names = data.columns
-        for i in range(len(data.index)):
-            if i == 4:
-                ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
-            ascii_table.add_row(data.iloc[i])
-        await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+        if data == []:
+            await ctx.send(f"```\nThere was no weekly options chain for the ticka{ticka}\n```")
+        else:
+            data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+            ascii_table.field_names = data.columns
+            for i in range(len(data.index)):
+                if i == 4:
+                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
+                ascii_table.add_row(data.iloc[i])
+            await ctx.send(f"```\n{ascii_table.get_string()}\n```")
     except:
       await ctx.send("There was an error please try again")
   
@@ -39,12 +42,15 @@ async def call_getter(ctx, ticka):
     data = ""
     try:
         data = yahoo.return_calls(ticka)
-        data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-        ascii_table.field_names = data.columns
-        for i in range(len(data.index)):
-            if i == 4:
-                ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
-            ascii_table.add_row(data.iloc[i])
+        if data == []:
+            await ctx.send(f"```\nThere was no weekly options chain for the ticka{ticka}\n```")
+        else:
+            data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+            ascii_table.field_names = data.columns
+            for i in range(len(data.index)):
+                if i == 4:
+                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
+                ascii_table.add_row(data.iloc[i])
         await ctx.send(f"```\n{ascii_table.get_string()}\n```")
     except:
       await ctx.send("There was an error please try again")
