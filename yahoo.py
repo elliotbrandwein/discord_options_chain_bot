@@ -4,10 +4,9 @@ from yahoo_fin import stock_info as si
 import datetime as dt
 import pandas as pd
 from prettytable import PrettyTable
-import datetime
 import math
 price_cache = {}
-
+_date_format ="%m-%d-%Y"
 def percentager(the_number):
     the_number = round(the_number,4)
     return "{:.2%}".format(the_number)
@@ -65,19 +64,34 @@ def return_calls(ticka):
     calls['profit'] = calls['profit'].apply(percentager)
     return calls.iloc[call_middle-5:call_middle+5]
 
-def get_band(ticka, band_age=None):
-    if(band_age == None):
-        band_age = 30
-    band_age *= 2
-    #to get the start's rolling avg, we need to start at the age before it
-    start_date = datetime.datetime.now() - datetime.timedelta(band_age)
-    data = si.get_data(ticka,start_date=start_date)
-    # we only need date  and adjusted price
+def get_band(ticka,start_date=None,end_date=None,band_age=None):
+    if start_date != None:
+        try:
+            start_date = dt.datetime.strptime(start_date,"%m-%d-%Y")
+        except:
+            print("ERROR, start_date but be in the format mm-dd-yyyy (%m-%d-%Y)") 
+
+        if band_age == None:
+            band_age = 30  
+        if end_date == None or end_date == start_date:
+            end_date = start_date + dt.timedelta(1)
+        start_date = start_date - dt.timedelta(band_age)
+    
+    else:
+        if band_age == None:
+            band_age = 30
+        start_date = start_date = dt.datetime.now() - dt.timedelta(band_age * 2)
+    #TODO: if there is an end_date without a start date, figure out what that means
+        
+    data = si.get_data(ticka,start_date=start_date,end_date=end_date)
+    # # we only need date  and adjusted price
     stockprices = data.drop(columns=['open', 'high', 'low', 'close', 'volume', 'ticker'])
-    #we calc the avg from the half way point, which should be roughly the first time we can calc the band
-    start_rolling = math.floor(len(stockprices) / 2)
-    stockprices['MA'] = stockprices['adjclose'].rolling(window=start_rolling).mean()
-    stockprices['STD'] = stockprices['adjclose'].rolling(window=start_rolling).std() 
+    # for exact dates, we might not end on a trading day, so this rounds that off
+    if len(data) < band_age:
+        band_age = len(data)
+    # #we calc the avg from the half way point, which should be roughly the first time we can calc the band
+    stockprices['MA'] = stockprices['adjclose'].rolling(window=band_age).mean()
+    stockprices['STD'] = stockprices['adjclose'].rolling(window=band_age).std() 
     stockprices['Upper'] = stockprices['MA'] + (stockprices['STD'] * 2)
     stockprices['Lower'] = stockprices['MA'] - (stockprices['STD'] * 2)
     #filter out all the NaN's from the bands we didnt cal
