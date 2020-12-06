@@ -29,7 +29,7 @@ async def put_getter(ctx, ticka):
             ascii_table.field_names = data.columns
             for i in range(len(data.index)):
                 if i == 4:
-                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
+                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","PRICE:", round(yahoo.price_cache[ticka],4)])
                 ascii_table.add_row(data.iloc[i])
             await ctx.send(f"```\n{ascii_table.get_string()}\n```")
     except:
@@ -49,7 +49,7 @@ async def call_getter(ctx, ticka):
             ascii_table.field_names = data.columns
             for i in range(len(data.index)):
                 if i == 4:
-                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(yahoo.price_cache[ticka],4)])
+                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","PRICE:", round(yahoo.price_cache[ticka],4)])
                 ascii_table.add_row(data.iloc[i])
             await ctx.send(f"```\n{ascii_table.get_string()}\n```")
     except:
