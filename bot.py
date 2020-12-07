@@ -17,11 +17,11 @@ bot = commands.Bot(command_prefix='>') #change character here
 # then query = " ".join(args[:]) >>> query = query.strip()
 
 
-def danny_divito(rum_ham, ticka):
+def danny_divito(rum_ham, ticka=None):
     ascii_table = PrettyTable()
     ascii_table.field_names = rum_ham.columns
     for i in range(len(rum_ham.index)):
-        if i == 4:
+        if i == 4 and ticka != None:
             ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","PRICE:", round(yahoo.price_cache[ticka],4)])
         ascii_table.add_row(rum_ham.iloc[i])
     return ascii_table
@@ -64,25 +64,24 @@ async def safe_contracts(ctx, *args):
     elif len(tokens) == 2:
         data = yahoo.get_band(tokens[1],start_date=datetime.date.today())
         if tokens[0] == 'call' or tokens[0] == 'calls':
-            data = data[['MA','STD','Upper']]
-            data = data.reset_index()
-            # print(data)
             calls = yahoo.return_calls(tokens[1])
             calls = calls[['Contract Name', 'Strike']]
-            #offset = len(tokens[1]) # for indexing contract names for date
-            # calls['index'] = calls['Contract Name'].apply(lambda x: pd.to_datetime(x[4+offset:6+offset] + '-' + x[2+offset:4+offset] + '-' + x[offset:2+offset]))            
-            # print(calls)
-            # calls = calls.merge(data, how='left', on='index')
             calls = calls.dropna()
-            calls['Safe'] = calls['Strike'] > data.iloc[0]['Upper']
-            ascii_table = danny_divito(calls, tokens[1])
-            await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+            calls['Safe'] = calls['Strike'] > data['Upper'][0]
+            ascii_table=danny_divito(calls)
+            data = data.apply(lambda x: round(x, 4), axis = 1)
+            await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
             return
         elif tokens[0] == 'put' or tokens[0] == 'puts':
-            data = data[['MA','STD','Lower']]
-    
-    
-
+            puts = yahoo.return_puts(tokens[1])
+            puts = puts[['Contract Name', 'Strike']]
+            puts = puts.dropna()
+            puts['Safe'] = puts['Strike'] < data['Lower'][0]
+            ascii_table=danny_divito(puts)
+            data = data.apply(lambda x: round(x, 4), axis = 1)
+            await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
+            return
+    await ctx.send("borked")
     return
     
 bot.run(TOKEN)
