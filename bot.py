@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 import discord
 from discord.ext import commands
 import yahoo #our other file
@@ -30,12 +32,14 @@ def danny_divito(rum_ham, ticka=None):
 async def put_getter(ctx, ticka):
     data = ""
     try:
-        data = yahoo.return_puts(ticka)
+        async with ctx.typing():
+            data = yahoo.return_puts(ticka)
         if len(data) == 0:
             await ctx.send(f"```\nThere was no weekly options chain for the ticka {ticka}\n```")
         else:
-            data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-            ascii_table = danny_divito(data, ticka)
+            async with ctx.typing():
+                data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+                ascii_table = danny_divito(data, ticka)
             await ctx.send(f"```\n{ascii_table.get_string()}\n```")
     except:
       await ctx.send("There was an error please try again")
@@ -45,12 +49,14 @@ async def put_getter(ctx, ticka):
 async def call_getter(ctx, ticka):
     data = ""
     try:
-        data = yahoo.return_calls(ticka)
+        async with ctx.typing():
+            data = yahoo.return_calls(ticka)
         if len(data) == 0:
             await ctx.send(f"```\nThere was no weekly options chain for the ticka {ticka}\n```")
         else:
-            data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-            ascii_table = danny_divito(data, ticka)
+            async with ctx.typing():
+                data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+                ascii_table = danny_divito(data, ticka)
             await ctx.send(f"```\n{ascii_table.get_string()}\n```")
     except:
       await ctx.send("There was an error please try again")
@@ -62,25 +68,26 @@ async def safe_contracts(ctx, *args):
         await ctx.send("funtionality is >bands [call/put] [ticka]")
         return
     elif len(tokens) == 2:
-        data = yahoo.get_band(tokens[1],start_date=datetime.date.today())
-        if tokens[0] == 'call' or tokens[0] == 'calls':
-            calls = yahoo.return_calls(tokens[1])
-            calls = calls[['Contract Name', 'Strike']]
-            calls = calls.dropna()
-            calls['Safe'] = calls['Strike'] > data['Upper'][0]
-            ascii_table=danny_divito(calls)
-            data = data.apply(lambda x: round(x, 4), axis = 1)
-            await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
-            return
-        elif tokens[0] == 'put' or tokens[0] == 'puts':
-            puts = yahoo.return_puts(tokens[1])
-            puts = puts[['Contract Name', 'Strike']]
-            puts = puts.dropna()
-            puts['Safe'] = puts['Strike'] < data['Lower'][0]
-            ascii_table=danny_divito(puts)
-            data = data.apply(lambda x: round(x, 4), axis = 1)
-            await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
-            return
+        async with ctx.typing(): 
+            data = yahoo.get_band(tokens[1],start_date=datetime.date.today())
+            if tokens[0] == 'call' or tokens[0] == 'calls':
+                calls = yahoo.return_calls(tokens[1])
+                calls = calls[['Contract Name', 'Strike']]
+                calls = calls.dropna()
+                calls['Safe'] = calls['Strike'] > data['Upper'][0]
+                ascii_table=danny_divito(calls)
+                data = data.apply(lambda x: round(x, 4), axis = 1)
+                await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
+                return
+            elif tokens[0] == 'put' or tokens[0] == 'puts':
+                puts = yahoo.return_puts(tokens[1])
+                puts = puts[['Contract Name', 'Strike']]
+                puts = puts.dropna()
+                puts['Safe'] = puts['Strike'] < data['Lower'][0]
+                ascii_table=danny_divito(puts)
+                data = data.apply(lambda x: round(x, 4), axis = 1)
+                await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
+                return
     await ctx.send("borked")
     return
     
