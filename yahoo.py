@@ -70,7 +70,6 @@ def get_band(ticka,start_date=None,end_date=None,band_age=None):
             start_date = dt.datetime.strptime(start_date,"%m-%d-%Y")
         except:
             print("ERROR, start_date but be in the format mm-dd-yyyy (%m-%d-%Y)") 
-
         if band_age == None:
             band_age = 30  
         if end_date == None or end_date == start_date:

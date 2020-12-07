@@ -2,6 +2,9 @@ import yahoo as lib
 import pandas as pd
 calls = pd.read_excel("test_data.xlsx",sheet_name="Calls")
 puts = pd.read_excel("test_data.xlsx",sheet_name="Puts")
+# calls = pd.read_excel("test_2.ods",sheet_name="calls",engine="odf")
+# puts = pd.read_excel("test_2.ods",sheet_name="puts",engine="odf")
+
 # remove nans
 puts = puts.query("Ticker == Ticker")
 calls = calls.query("Ticker == Ticker")
@@ -16,7 +19,7 @@ calls_assigned = calls_assigned.assign(Upper=None)
 calls_assigned = calls_assigned.assign(Safe=None)
 
 puts_assigned = puts_assigned.assign(Lower=None)
-puts_assigned = calls_assigned.assign(Safe=None)
+puts_assigned = puts_assigned.assign(Safe=None)
 
 for i,row in puts_assigned.iterrows():
     ticka = row[0]
