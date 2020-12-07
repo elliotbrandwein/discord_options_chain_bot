@@ -79,7 +79,7 @@ def get_band(ticka,start_date=None,end_date=None,band_age=None):
     else:
         if band_age == None:
             band_age = 30
-        start_date = start_date = dt.datetime.now() - dt.timedelta(band_age * 2)
+        start_date = dt.datetime.now() - dt.timedelta(band_age * 2)
     #TODO: if there is an end_date without a start date, figure out what that means
         
     data = si.get_data(ticka,start_date=start_date,end_date=end_date)
