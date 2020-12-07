@@ -1,6 +1,6 @@
 .vscode/
 .env
-__pycache__/*
+__pycache__/
 env/
 .~lock
 *.csv
