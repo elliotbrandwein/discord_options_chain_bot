@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 from prettytable import PrettyTable
 import pandas as pd
-
+import datetime as datetime
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
@@ -62,19 +62,19 @@ async def safe_contracts(ctx, *args):
         await ctx.send("funtionality is >bands [call/put] [ticka]")
         return
     elif len(tokens) == 2:
-        data = yahoo.get_band(tokens[1])
+        data = yahoo.get_band(tokens[1],start_date=datetime.date.today())
         if tokens[0] == 'call' or tokens[0] == 'calls':
             data = data[['MA','STD','Upper']]
             data = data.reset_index()
-            print(data)
+            # print(data)
             calls = yahoo.return_calls(tokens[1])
             calls = calls[['Contract Name', 'Strike']]
             offset = len(tokens[1]) # for indexing contract names for date
-            calls['index'] = calls['Contract Name'].apply(lambda x: pd.to_datetime(x[4+offset:6+offset] + '-' + x[2+offset:4+offset] + '-' + x[offset:2+offset]))            
-            print(calls)
-            calls = calls.merge(data, how='left', on='index')
+            # calls['index'] = calls['Contract Name'].apply(lambda x: pd.to_datetime(x[4+offset:6+offset] + '-' + x[2+offset:4+offset] + '-' + x[offset:2+offset]))            
+            # print(calls)
+            # calls = calls.merge(data, how='left', on='index')
             calls = calls.dropna()
-            calls['Safe'] = calls['Strike'] > calls['Upper']
+            calls['Safe'] = calls['Strike'] > date.iloc[0]['Upper']
             ascii_table = danny_divito(calls, tokens[1])
             await ctx.send(f"```\n{ascii_table.get_string()}\n```")
             return
