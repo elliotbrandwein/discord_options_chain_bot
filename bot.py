@@ -69,7 +69,7 @@ async def safe_contracts(ctx, *args):
         return
     elif len(tokens) == 2:
         async with ctx.typing():
-            data = yahoo.get_band(tokens[1],start_date=datetime.date.today())
+            data = yahoo.get_band(tokens[1],start_date=datetime.date.today(), band_age=20)
         if tokens[0] == 'call' or tokens[0] == 'calls':
             async with ctx.typing():
                 calls = yahoo.return_calls(tokens[1])
