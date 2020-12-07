@@ -69,12 +69,12 @@ async def safe_contracts(ctx, *args):
             # print(data)
             calls = yahoo.return_calls(tokens[1])
             calls = calls[['Contract Name', 'Strike']]
-            offset = len(tokens[1]) # for indexing contract names for date
+            #offset = len(tokens[1]) # for indexing contract names for date
             # calls['index'] = calls['Contract Name'].apply(lambda x: pd.to_datetime(x[4+offset:6+offset] + '-' + x[2+offset:4+offset] + '-' + x[offset:2+offset]))            
             # print(calls)
             # calls = calls.merge(data, how='left', on='index')
             calls = calls.dropna()
-            calls['Safe'] = calls['Strike'] > date.iloc[0]['Upper']
+            calls['Safe'] = calls['Strike'] > data.iloc[0]['Upper']
             ascii_table = danny_divito(calls, tokens[1])
             await ctx.send(f"```\n{ascii_table.get_string()}\n```")
             return
