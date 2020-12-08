@@ -2,27 +2,40 @@ import yahoo as lib
 import pandas as pd
 from tqdm import tqdm
 
+print("reading all sheets.....")
+
 our_calls = [
-    pd.read_excel("test_2.ods",sheet_name="calls",engine="odf"),
-    pd.read_excel("test_y.ods",sheet_name="calls",engine="odf")
+    pd.read_excel("sheets/test_2.ods",sheet_name="calls",engine="odf"),
+    pd.read_excel("sheets/test_y.ods",sheet_name="Calls",engine="odf")
 ]
 our_puts = [
-    pd.read_excel("test_2.ods",sheet_name="puts",engine="odf"),
-    pd.read_excel("test_y.ods",sheet_name="puts",engine="odf")
+    pd.read_excel("sheets/test_2.ods",sheet_name="puts",engine="odf"),
+    pd.read_excel("sheets/test_y.ods",sheet_name="Puts",engine="odf")
 ]
+
+for frame in our_calls:
+    frame.columns = [i.strip() for i in frame.columns]
+for frame in our_puts:
+    frame.columns = [i.strip() for i in frame.columns]
+
+print('combining all sheets....')
 
 calls = pd.concat(our_calls)
 puts = pd.concat(our_puts)
 
-
-calls = calls.drop(columns=["Expiry","Premium","Collateral","Return","Dollar Return", "Duration (Days)"])
-puts = puts.drop(columns=["Expiry","Premium","Collateral","Return","Dollar Return", "Duration (Days)"])
+calls = calls.drop(columns=["Expiry","Collateral","Return","Dollar Return", "Duration (Days)"])
+puts = puts.drop(columns=["Expiry","Collateral","Return","Dollar Return", "Duration (Days)"])
 
 puts = puts.query("Ticker == Ticker")
 calls = calls.query("Ticker == Ticker")
+puts = puts.query("Premium == Premium")
+calls = calls.query("Premium == Premium")
 
 calls = calls.drop_duplicates()
 puts = puts.drop_duplicates()
+
+calls = calls.reset_index(drop=True)
+puts = puts.reset_index(drop=True)
 
 for idx in tqdm(calls.index):
     ticka = calls.loc[idx, 'Ticker']
