@@ -1,16 +1,23 @@
 import yahoo as lib
 import pandas as pd
-calls = pd.read_excel("test_data.xlsx",sheet_name="Calls")
-puts = pd.read_excel("test_data.xlsx",sheet_name="Puts")
-# calls = pd.read_excel("test_2.ods",sheet_name="calls",engine="odf")
-# puts = pd.read_excel("test_2.ods",sheet_name="puts",engine="odf")
+
+#### sheet 1
+# calls = pd.read_excel("test_data.xlsx",sheet_name="Calls")
+# puts = pd.read_excel("test_data.xlsx",sheet_name="Puts")
+#### sheet 2
+calls = pd.read_excel("test_2.ods",sheet_name="calls",engine="odf")
+puts = pd.read_excel("test_2.ods",sheet_name="puts",engine="odf")
 
 # remove nans
 puts = puts.query("Ticker == Ticker")
 calls = calls.query("Ticker == Ticker")
 # drop all useless data
-calls = calls.drop(columns=["Expiry","Premium","Collateral","Return","Dollar Return", "Duration (Days)"])
-puts = puts.drop(columns=["Expiry","Premium","Collateral","Return","Dollar Return", "Duration (Days)"])
+#### sheet 1
+# calls = calls.drop(columns=["Expiry","Premium","Collateral","Return","Dollar Return", "Duration (Days)"])
+# puts = puts.drop(columns=["Expiry","Premium","Collateral","Return","Dollar Return", "Duration (Days)"])
+#### sheet 2
+calls = calls.drop(columns=["Expiry"," Premium ","Collateral","Return"," Dollar Return ", "Duration (Days)"])
+puts = puts.drop(columns=["Expiry"," Premium "," Collateral ","Return"," Dollar Return ", "Duration (Days)"])
 
 calls_assigned = calls.query("Assigned == 1")
 puts_assigned = puts.query("Assigned == 1")
