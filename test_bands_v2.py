@@ -26,10 +26,8 @@ puts = pd.concat(our_puts)
 calls = calls.drop(columns=["Expiry","Collateral","Return","Dollar Return", "Duration (Days)"])
 puts = puts.drop(columns=["Expiry","Collateral","Return","Dollar Return", "Duration (Days)"])
 
-puts = puts.query("Ticker == Ticker")
-calls = calls.query("Ticker == Ticker")
-puts = puts.query("Premium == Premium")
-calls = calls.query("Premium == Premium")
+calls = calls.dropna(subset=['Ticker', 'Premium'])
+puts = puts.dropna(subset=['Ticker', 'Premium'])
 
 calls = calls.drop_duplicates()
 puts = puts.drop_duplicates()
