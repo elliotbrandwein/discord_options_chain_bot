@@ -2,11 +2,11 @@ import yahoo as lib
 import pandas as pd
 
 #### sheet 1
-# calls = pd.read_excel("test_data.xlsx",sheet_name="Calls")
-# puts = pd.read_excel("test_data.xlsx",sheet_name="Puts")
+# calls = pd.read_excel("sheets/test_data.xlsx",sheet_name="Calls")
+# puts = pd.read_excel("sheets/test_data.xlsx",sheet_name="Puts")
 #### sheet 2
-calls = pd.read_excel("test_2.ods",sheet_name="calls",engine="odf")
-puts = pd.read_excel("test_2.ods",sheet_name="puts",engine="odf")
+calls = pd.read_excel("sheets/test_2.ods",sheet_name="calls",engine="odf")
+puts = pd.read_excel("sheets/test_2.ods",sheet_name="puts",engine="odf")
 
 # remove nans
 puts = puts.query("Ticker == Ticker")
