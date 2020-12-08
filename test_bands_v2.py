@@ -2,8 +2,18 @@ import yahoo as lib
 import pandas as pd
 from tqdm import tqdm
 
-calls = pd.read_excel("test_data.xlsx",sheet_name="Calls")
-puts = pd.read_excel("test_data.xlsx",sheet_name="Puts")
+our_calls = [
+    pd.read_excel("test_2.ods",sheet_name="calls",engine="odf"),
+    pd.read_excel("test_y.ods",sheet_name="calls",engine="odf")
+]
+our_puts = [
+    pd.read_excel("test_2.ods",sheet_name="puts",engine="odf"),
+    pd.read_excel("test_y.ods",sheet_name="puts",engine="odf")
+]
+
+calls = pd.concat(our_calls)
+puts = pd.concat(our_puts)
+
 
 calls = calls.drop(columns=["Expiry","Premium","Collateral","Return","Dollar Return", "Duration (Days)"])
 puts = puts.drop(columns=["Expiry","Premium","Collateral","Return","Dollar Return", "Duration (Days)"])
