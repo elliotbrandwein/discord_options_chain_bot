@@ -1,5 +1,6 @@
 import yahoo as lib
 import pandas as pd
+
 calls = pd.read_excel("test_data.xlsx",sheet_name="Calls")
 puts = pd.read_excel("test_data.xlsx",sheet_name="Puts")
 # calls = pd.read_excel("test_2.ods",sheet_name="calls",engine="odf")
@@ -66,8 +67,8 @@ print("Accuracy for calls_assigned", len(calls_assigned.query('Safe == False').i
 print("Accuracy for calls_unassigned", len(calls_unassigned.query('Safe == True').index) / total_calls_unassigned )
 print("Accuracy for puts_assigned", len(puts_assigned.query('Safe == False').index) / total_puts_assigned )
 print("Accuracy for puts_unassigned", len(puts_unassigned.query('Safe == True').index) / total_puts_unassigned )
-calls_assigned.to_csv('calls_assigned.csv')
-calls_unassigned.to_csv('calls_unassigned.csv')
-puts_assigned.to_csv('puts_assigned.csv')
-puts_unassigned.to_csv('puts_unassigned.csv')
+calls_assigned.to_csv('outputs/calls_assigned.csv')
+calls_unassigned.to_csv('outputs/calls_unassigned.csv')
+puts_assigned.to_csv('outputs/puts_assigned.csv')
+puts_unassigned.to_csv('outputs/puts_unassigned.csv')
 

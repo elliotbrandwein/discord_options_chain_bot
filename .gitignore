@@ -4,3 +4,5 @@ __pycache__/
 env/
 .~lock
 *.csv
+outputs/
+.ipynb_checkpoints/
