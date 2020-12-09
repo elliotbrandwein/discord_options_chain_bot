@@ -1,5 +1,8 @@
 #! /usr/bin/python3
 
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from joblib import load
 import discord
 from discord.ext import commands
 import yahoo  # our other file
@@ -97,5 +100,46 @@ async def safe_contracts(ctx, *args):
             return
     await ctx.send("borked")
     return
+
+
+# load classifier once on launch
+rf_classifier = load('models/rf_classifier.ai')
+
+
+def get_prediction(strike, std, ma, adjclose):
+    x = std/ma
+    y = abs((adjclose/ma)-1)
+    z = abs((strike/adjclose)-1)
+    return int(rf_classifier.predict(np.array([x, y, z]).reshape(1, -1))[0])
+
+
+@bot.command(name='classifier')
+async def classifier_dumb(ctx, *args):
+    tokens = args[:]
+    if len(tokens) < 2:
+        await ctx.send("funtionality is >classifier [call/put] [ticka]")
+        return
+    elif len(tokens) == 2:
+        async with ctx.typing():
+            data = yahoo.get_band(tokens[1], start_date=datetime.date.today(), band_age=20)
+
+        if tokens[0] == 'call' or tokens[0] == 'calls':
+            async with ctx.typing():
+                calls = yahoo.return_calls(tokens[1])
+                calls = calls[['Contract Name', 'Strike']]
+                calls = calls.dropna()
+                calls['Safe'] = calls['Strike'] > data['Upper'][0]
+                for idx in calls.index:
+                    strike = calls.loc[idx,'Strike']
+                    std = data['STD'][0]
+                    ma = data['MA'][0]
+                    adjclose = data['adjclose'][0]
+                    pred = get_prediction(strike, std, ma, adjclose)
+                    calls.loc[idx, 'Prediction'] = pred
+                ascii_table = danny_divito(calls)
+                data = data.apply(lambda x: round(x, 4), axis=1)
+                await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
+                return
+
 
 bot.run(TOKEN)

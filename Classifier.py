@@ -116,44 +116,33 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 19,
+   "execution_count": 48,
    "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "array([[ 0.04978282, -0.05499148, -0.05234656,  1.        ]])"
-      ]
-     },
-     "execution_count": 19,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
+   "outputs": [],
    "source": [
     "import numpy as np\n",
-    "sample_test = np.array([0.583691767213275/11.7247619174776, (11.0799999237061/11.7247619174776)-1, (10.5/11.0799999237061)-1,1])\n",
+    "sample_test = np.array([1.6021/15.2938, (16.94/15.2938)-1, (15/16.94)-1])\n",
     "#sample_test.reshape(1,-1)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 20,
+   "execution_count": 49,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/plain": [
-       "array([0.])"
+       "1.0"
       ]
      },
-     "execution_count": 20,
+     "execution_count": 49,
      "metadata": {},
      "output_type": "execute_result"
     }
    ],
    "source": [
-    "rf_classifier.predict(sample_test.reshape(1,-1))"
+    "rf_classifier.predict(sample_test.reshape(1,-1))[0]"
    ]
   },
   {

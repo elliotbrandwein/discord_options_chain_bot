@@ -25,13 +25,13 @@ print('combining all sheets....')
 calls = pd.concat(our_calls)
 puts = pd.concat(our_puts)
 
-calls = calls.drop(columns=["Expiry", "Collateral",
-                            "Return", "Dollar Return", "Duration (Days)"])
-puts = puts.drop(columns=["Expiry", "Collateral",
-                          "Return", "Dollar Return", "Duration (Days)"])
-
 calls = calls.dropna(subset=['Ticker', 'Premium'])
 puts = puts.dropna(subset=['Ticker', 'Premium'])
+
+calls = calls.drop(columns=["Expiry", "Collateral",
+                            "Return", "Premium", "Dollar Return", "Duration (Days)"])
+puts = puts.drop(columns=["Expiry", "Collateral",
+                          "Return", "Premium", "Dollar Return", "Duration (Days)"])
 
 calls = calls.drop_duplicates()
 puts = puts.drop_duplicates()
