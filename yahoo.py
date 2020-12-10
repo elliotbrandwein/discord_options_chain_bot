@@ -69,7 +69,7 @@ def return_calls(ticka):
         return []
     call_middle = get_middle(calls, ticka)
     calls['profit'] = calls['profit'].apply(percentager)
-    return calls.iloc[call_middle-5:call_middle+5]
+    return calls.iloc[0 if call_middle - 5 < 0 else call_middle - 5:call_middle+5]
 
 def get_todays_safe_options(ticka,window_length=None,option="call"):
     option = option.lower()
