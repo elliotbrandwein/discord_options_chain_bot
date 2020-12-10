@@ -102,6 +102,8 @@ def get_todays_safe_options(ticka,window_length=None,option="call"):
         output.query('Strike < @LOWER',inplace=True)
     output['profit'] = output['profit'].apply(percentager)
     output.query('Bid != 0.0',inplace=True)
+    bad_bids = output[output['Bid'] == '-']
+    output.drop(bad_bids, inplace=True)
     return output
 
 def get_band(ticka,start_date=None,end_date=None,band_age=None):
