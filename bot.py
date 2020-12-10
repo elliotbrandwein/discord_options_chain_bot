@@ -44,6 +44,7 @@ async def safe_getter(ctx,*args):
             await ctx.send(f"```\n{ascii_table.get_string()}\n```")
         except:
             await ctx.send("There was an error please try again")
+
 @bot.command(name='puts')
 async def put_getter(ctx, ticka):
     data = ""
@@ -57,7 +58,7 @@ async def put_getter(ctx, ticka):
                 data = data.drop(columns=['Contract Name', 'Last Trade Date',
                                           'Change', 'Implied Volatility', '% Change', 'Open Interest'])
                 ascii_table = danny_divito(data, ticka)
-            await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+            await ctx.send(f"```\n{ascii_table.get_string()}\n{yahoo.stock_expiry_cache[ticka]}\n```")
     except:
         await ctx.send("There was an error please try again")
 
@@ -75,7 +76,7 @@ async def call_getter(ctx, ticka):
                 data = data.drop(columns=['Contract Name', 'Last Trade Date',
                                           'Change', 'Implied Volatility', '% Change', 'Open Interest'])
                 ascii_table = danny_divito(data, ticka)
-            await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+            await ctx.send(f"```\n{ascii_table.get_string()}\n{yahoo.stock_expiry_cache[ticka]}\n```")
     except:
         await ctx.send("There was an error please try again")
 

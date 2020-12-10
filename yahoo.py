@@ -35,23 +35,23 @@ def friday():
 
 def calls_chain(ticka):
     calls = []
-    f = friday()
+    stock_expiry_cache[ticka] = friday()
     while(calls == []):
         try:
-            calls = opt.get_calls(ticka,f)
+            calls = opt.get_calls(ticka,stock_expiry_cache[ticka])
         except: 
-            f = f + dt.timedelta(days=7) 
+            stock_expiry_cache[ticka] = stock_expiry_cache[ticka] + dt.timedelta(days=7) 
     calls['profit'] = calls['Last Price'] / calls['Strike']
     return calls
 
 def puts_chain(ticka):
     puts = pd.DataFrame()
-    f = friday()
+    stock_expiry_cache[ticka] = friday()
     while(puts.empty):
         try:
-            puts = opt.get_puts(ticka,f)
-        except: 
-            f = f + dt.timedelta(days=7) 
+            puts = opt.get_puts(ticka,stock_expiry_cache[ticka])
+        except:
+            stock_expiry_cache[ticka] = stock_expiry_cache[ticka] + dt.timedelta(days=7) 
     puts['profit'] = puts['Last Price'] / puts['Strike']
     return puts
 
@@ -60,7 +60,6 @@ def return_puts(ticka):
     if len(puts) == 0:
         return puts
     put_middle = get_middle(puts, ticka)
-    print(put_middle)
     puts['profit'] = puts['profit'].apply(percentager)
     return puts.iloc[0 if put_middle - 5 < 0 else put_middle - 5:put_middle+5]
 
