@@ -34,9 +34,9 @@ def friday():
     return today + dt.timedelta((4 - today.weekday()) % 7)
 
 def calls_chain(ticka):
-    calls = []
+    calls = pd.DataFrame()
     stock_expiry_cache[ticka] = friday()
-    while(calls == []):
+    while(calls.empty):
         try:
             calls = opt.get_calls(ticka,stock_expiry_cache[ticka])
         except: 
