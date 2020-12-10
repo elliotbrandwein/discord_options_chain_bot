@@ -55,21 +55,21 @@ def puts_chain(ticka):
     puts['profit'] = puts['Last Price'] / puts['Strike']
     return puts
 
-def return_puts(ticka):
+def return_puts(ticka, window = 5):
     puts = puts_chain(ticka)
     if len(puts) == 0:
         return puts
     put_middle = get_middle(puts, ticka)
     puts['profit'] = puts['profit'].apply(percentager)
-    return puts.iloc[0 if put_middle - 5 < 0 else put_middle - 5:put_middle+5]
+    return puts.iloc[0 if put_middle - window < 0 else put_middle - window:put_middle+window]
 
-def return_calls(ticka):
+def return_calls(ticka, window=5):
     calls = calls_chain(ticka)
     if len(calls) == 0:
         return []
     call_middle = get_middle(calls, ticka)
     calls['profit'] = calls['profit'].apply(percentager)
-    return calls.iloc[0 if call_middle - 5 < 0 else call_middle - 5:call_middle+5]
+    return calls.iloc[0 if call_middle - window < 0 else call_middle - window:call_middle+window]
 
 def get_todays_safe_options(ticka,window_length=None,option="call"):
     option = option.lower()

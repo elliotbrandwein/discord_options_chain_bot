@@ -124,8 +124,8 @@ async def classifier_dumb(ctx, *args):
             data = yahoo.get_band(tokens[1], start_date=datetime.date.today(), band_age=20)
         if tokens[0] == 'call' or tokens[0] == 'calls':
             async with ctx.typing():
-                calls = yahoo.return_calls(tokens[1])
-                calls = calls[['Contract Name', 'Strike', 'Last Price']]
+                calls = yahoo.return_calls(tokens[1], window=10)
+                calls = calls[['Strike', 'Last Price']]
                 calls = calls.dropna()
                 calls['Safe'] = calls['Strike'] > data['Upper'][0]
                 std = data['STD'][0]
@@ -134,11 +134,11 @@ async def classifier_dumb(ctx, *args):
                 calls = my_classifier.get_prediction(calls, std, ma, adjclose)
                 ascii_table = danny_divito(calls)
                 data = data.apply(lambda x: round(x, 4), axis=1)
-                await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
+                await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n{yahoo.stock_expiry_cache[tokens[1]]}\n```")
         elif tokens[0] == 'put' or tokens[0] == 'puts':
             async with ctx.typing():
-                puts = yahoo.return_puts(tokens[1])
-                puts = puts[['Contract Name', 'Strike', 'Last Price']]
+                puts = yahoo.return_puts(tokens[1],window = 10)
+                puts = puts[['Strike', 'Last Price']]
                 puts = puts.dropna()
                 puts['Safe'] = puts['Strike'] < data['Lower'][0]
                 std = data['STD'][0]
@@ -147,7 +147,7 @@ async def classifier_dumb(ctx, *args):
                 puts = my_classifier.get_prediction(puts, std, ma, adjclose)
                 ascii_table = danny_divito(puts)
                 data = data.apply(lambda x: round(x, 4), axis=1)
-                await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n```")
+                await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n{yahoo.stock_expiry_cache[tokens[1]]}\n```")
         else:
             await ctx.send("borked")
 @bot.command(name='model')
