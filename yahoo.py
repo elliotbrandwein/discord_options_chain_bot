@@ -102,7 +102,7 @@ def get_todays_safe_options(ticka,window_length=None,option="call"):
         output.query('Strike < @LOWER',inplace=True)
     output['profit'] = output['profit'].apply(percentager)
     output.query('Bid != 0.0',inplace=True)
-    bad_bids = output[output['Bid'] == '-']
+    bad_bids = output[output['Bid'] == '-'].index
     output.drop(bad_bids, inplace=True)
     return output
 
