@@ -94,6 +94,7 @@ def get_todays_safe_options(ticka,window_length=None,option="call"):
         output = puts_chain(ticka).drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
         output.query('Strike < @LOWER',inplace=True)
     output['profit'] = output['profit'].apply(percentager)
+    output.query('Bid == 0.0',inplace=True)
     return output
 
 def get_band(ticka,start_date=None,end_date=None,band_age=None):
