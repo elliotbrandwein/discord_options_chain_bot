@@ -101,7 +101,7 @@ def get_todays_safe_options(ticka,window_length=None,option="call"):
         output = puts_chain(ticka).drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
         output.query('Strike < @LOWER',inplace=True)
     output['profit'] = output['profit'].apply(percentager)
-    output.query('Bid != 0.0',inplace=True)
+    output.query('Volume > 100',inplace=True)
     bad_bids = output[output['Bid'] == '-'].index
     output.drop(bad_bids, inplace=True)
     return output
