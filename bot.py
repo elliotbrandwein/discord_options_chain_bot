@@ -30,7 +30,20 @@ def danny_divito(rum_ham, ticka=None):
         ascii_table.add_row(rum_ham.iloc[i])
     return ascii_table
 
-
+@bot.command(name="safe")
+async def safe_getter(ctx,*args):
+    tokens = args[:]
+    if len(tokens) != 2:
+        await ctx.send("funtionality is >safe [call/put] [ticka]")
+        return
+    else:
+        try:
+            async with ctx.typing():
+                data = yahoo.get_todays_safe_options(tokens[1],option=tokens[0])
+                ascii_table = danny_divito(data)
+            await ctx.send(f"```\n{ascii_table.get_string()}\n```")
+        except:
+            await ctx.send("There was an error please try again")
 @bot.command(name='puts')
 async def put_getter(ctx, ticka):
     data = ""
