@@ -28,10 +28,13 @@ puts = pd.concat(our_puts)
 calls = calls.dropna(subset=['Ticker', 'Premium'])
 puts = puts.dropna(subset=['Ticker', 'Premium'])
 
-calls = calls.drop(columns=["Expiry", "Collateral",
-                            "Return", "Premium", "Dollar Return", "Duration (Days)"])
-puts = puts.drop(columns=["Expiry", "Collateral",
-                          "Return", "Premium", "Dollar Return", "Duration (Days)"])
+bad_returns = calls[calls['Return'] == '#DIV/0!'].index
+calls = calls.drop(bad_returns)
+bad_returns = puts[puts['Return'] == '#DIV/0!'].index
+puts = puts.drop(bad_returns)
+
+calls = calls.drop(columns=["Expiry", "Collateral", "Premium", "Dollar Return", "Duration (Days)"])
+puts = puts.drop(columns=["Expiry", "Collateral", "Premium", "Dollar Return", "Duration (Days)"])
 
 calls = calls.drop_duplicates()
 puts = puts.drop_duplicates()
