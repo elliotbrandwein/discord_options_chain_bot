@@ -93,12 +93,13 @@ def get_todays_safe_options(ticka,window_length=None,option="call"):
     STD = stockprices['adjclose'].std()
     UPPER = MA + (STD * 2)
     LOWER = MA - (STD * 2)
+    
     if opt_case == 1:
         output = calls_chain(ticka).drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-        output = output.query('Strike > @UPPER')
+        output.query('Strike > @UPPER',inplace=True)
     else:
         output = puts_chain(ticka).drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-        output = output.query('Strike < @LOWER')
+        output.query('Strike < @LOWER',inplace=True)
     output['profit'] = output['profit'].apply(percentager)
     return output
 
