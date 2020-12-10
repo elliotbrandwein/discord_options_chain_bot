@@ -12,7 +12,7 @@ def get_prediction(df, std, ma, adjclose):
     df['SD/MA'] = std/ma
     df['% MA to adj'] = abs((adjclose/ma)-1)
     df['% ADJ to Strike'] = ((df['Strike']/adjclose)-1).apply(lambda x: abs(x))
-    df = df.reindex(columns = ['Contract Name', 'Strike', 'Last Price', 'Safe', 'SD/MA', '% MA to adj', '% ADJ to Strike', 'Return'])
+    df = df.reindex(columns = ['Strike', 'Last Price', 'Safe', 'SD/MA', '% MA to adj', '% ADJ to Strike', 'Return'])
     df['Predictions'] = rf_classifier.predict(df[['SD/MA', '% MA to adj', '% ADJ to Strike', 'Return']])
     df['Predictions'] = df['Predictions'].apply(lambda x: "Assigned" if int(x) == 1 else "Not Assigned") 
 
