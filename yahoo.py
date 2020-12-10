@@ -64,6 +64,37 @@ def return_calls(ticka):
     calls['profit'] = calls['profit'].apply(percentager)
     return calls.iloc[call_middle-5:call_middle+5]
 
+def get_todays_safe_options(ticka,window_length=None,option="call"):
+    option = option.lower()
+    opt_case = None
+    if "call" in option:
+        opt_case = 1
+    elif "put" in option:
+        opt_case = 2
+    if opt_case == None:
+        return []
+    if window_length != None:
+        start_date = dt.datetime.now() - dt.timedelta(window_length)
+        end_date = dt.datetime.now() + dt.timedelta(1)
+    else:
+        window_length = 20
+        start_date = dt.datetime.now() - dt.timedelta(window_length)
+        end_date = dt.datetime.now() + dt.timedelta(1)
+    data = si.get_data(ticka,start_date=start_date,end_date=end_date)
+    stockprices = data.drop(columns=['open', 'high', 'low', 'close', 'volume', 'ticker'])
+    MA = stockprices['adjclose'].mean()
+    STD = stockprices['adjclose'].std()
+    UPPER = MA + (STD * 2)
+    LOWER = MA - (STD * 2)
+    if opt_case == 1:
+        output = calls_chain(ticka).drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+        output = output.query('Strike > @UPPER')
+    else:
+        output = puts_chain(ticka).drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+        output = output.query('Strike < @LOWER')
+    output['profit'] = output['profit'].apply(percentager)
+    return output
+
 def get_band(ticka,start_date=None,end_date=None,band_age=None):
     if start_date != None:
         try:
