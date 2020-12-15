@@ -131,7 +131,7 @@ async def classifier_dumb(ctx, *args):
                 std = data['STD'][0]
                 ma = data['MA'][0]
                 adjclose = data['adjclose'][0]
-                calls = my_classifier.get_prediction(calls, std, ma, adjclose)
+                calls = my_classifier.get_prediction(calls, std, ma, adjclose, False)
                 ascii_table = danny_divito(calls)
                 data = data.apply(lambda x: round(x, 4), axis=1)
                 await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n{yahoo.stock_expiry_cache[tokens[1]]}\n```")
@@ -144,7 +144,7 @@ async def classifier_dumb(ctx, *args):
                 std = data['STD'][0]
                 ma = data['MA'][0]
                 adjclose = data['adjclose'][0]
-                puts = my_classifier.get_prediction(puts, std, ma, adjclose)
+                puts = my_classifier.get_prediction(puts, std, ma, adjclose, True)
                 ascii_table = danny_divito(puts)
                 data = data.apply(lambda x: round(x, 4), axis=1)
                 await ctx.send(f"```\n{ascii_table.get_string()}\n{danny_divito(data).get_string()}\n{yahoo.stock_expiry_cache[tokens[1]]}\n```")
