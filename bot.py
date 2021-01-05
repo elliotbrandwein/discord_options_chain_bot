@@ -166,5 +166,3 @@ async def model_stats(ctx, info: str):
         await ctx.send(file = discord.File(r'models/confusion_matrix.png'))
 
 bot.run(TOKEN)
-
-bot.run(TOKEN)
