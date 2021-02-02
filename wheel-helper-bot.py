@@ -8,6 +8,8 @@ import os
 from prettytable import PrettyTable
 import pandas as pd
 import datetime as datetime
+import csv
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
@@ -18,6 +20,13 @@ bot = commands.Bot(command_prefix='>')  # change character here
 # can accept multiple tokens by using *args instead of ticka
 # then query = " ".join(args[:]) >>> query = query.strip()
 
+weekly_stinks = []
+with open('weekly_stonks.csv', 'r') as f: 
+    read_deez_nutz = csv.reader(f)
+    for row in read_deez_nutz:
+        if row[0] == 'ticka':
+            continue
+        weekly_stinks.append(row[0])
 
 def danny_divito(rum_ham, ticka=None):
     ascii_table = PrettyTable()
@@ -117,10 +126,27 @@ async def safe_contracts(ctx, *args):
 # that lil dude will check the puts of all weeklies on a strict schedule, and output the current highest IV
 #    to a file, wich is read here
 ####
+## using the static weekly stinks
 @bot.command(name='high-v')
-async def read_iv(ctx, *args):
-    tokens = args[:]
+async def read_iv(ctx):
+    async with ctx.typing():
+        chains = [yahoo.check_iv(ticka) for ticka in weekly_stinks]
+        chains = [chain for chain in chains if isinstance(chain, pd.DataFrame)]
+        to_concat = [chain for chain in chains if not chain.empty]
+    if not to_concat:
+        await ctx.send('Sorry bud, none this time')
+        return
+    all_options = pd.concat(to_concat, ignore_index=True)
     
-    await ctx.send('work in progress lemme alone')
+    message = danny_divito(all_options)
+    dropped_counter = 0
+    message = message + f'\nDropped {dropped_counter} records.'
+    async with ctx.typing():
+        while len(message) > 2000:
+            all_options = all_options[:-1]
+            message = danny_divito(all_options)
+            message = message + f'\nDropped {dropped_counter} records.'
+    await ctx.send(message)
+    return
 
 bot.run(TOKEN)

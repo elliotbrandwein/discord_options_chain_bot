@@ -5,6 +5,16 @@ import datetime as dt
 import pandas as pd
 from prettytable import PrettyTable
 import math
+from random import random
+import time
+import dateutil.parser as dp
+
+def get_expiry_from_name(c_name, ticker):
+    offset = len(ticker)
+    expiry = c_name[offset:offset+3] + c_name[offset+3:offset+5] + c_name[offset+5:offset+6]
+    expiry = expiry[2:] + expiry[0:2]
+    return dp.parse(expiry)
+
 price_cache = {}
 _date_format ="%m-%d-%Y"
 def percentager(the_number):
@@ -139,7 +149,36 @@ def get_band(ticka,start_date=None,end_date=None,band_age=None):
     #filter out all the NaN's from the bands we didnt cal
     stockprices = stockprices.query('MA == MA')
     return stockprices
-    
+
+def check_iv(ticka):
+    puts = pd.DataFrame()
+    tries = 0
+    while puts.empty:
+        if tries > 3:
+            return 'yahoo'
+        try:
+            puts = opt.get_options_chain(ticka)['puts']
+        except:
+            print('FAILED')
+            time.sleep(random()+1)
+        tries += 1
+    if 'Implied Volatility' not in puts.columns:
+        return 'yahoo'
+
+    puts['Implied Volatility'] = puts['Implied Volatility'].apply(lambda x: float(x.replace('%','').replace(',',''))/100)
+    expiry = get_expiry_from_name(puts['Contract Name'][0], ticka)
+    puts = puts[puts['Implied Volatility'] >= 1]
+    puts['Bid'] = puts['Bid'].apply(lambda x: 0 if type(x) ==  str else x)
+    puts = puts[puts['Bid'] > 0]
+    puts = puts[puts['Strike'] <= 20]
+    puts['Ticka'] = ticka
+    puts['Exp'] = expiry
+    puts = puts.rename(columns={'Implied Volatility': 'IV', 'Open Interest':'OI', 'Volume':'Vol'})
+    return puts.drop(columns=['Last Price', 'Change', 'Last Trade Date', '% Change', 'Contract Name'])
+
+
+
+
 if __name__ == '__main__':
     print("please give me a ticka") # will replace with input from bot
     ticka = input()
