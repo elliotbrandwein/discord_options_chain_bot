@@ -127,6 +127,8 @@ async def safe_contracts(ctx, *args):
 #    to a file, wich is read here
 ####
 ## using the static weekly stinks
+## runtime too long
+"""
 @bot.command(name='high-v')
 async def read_iv(ctx):
     async with ctx.typing():
@@ -148,5 +150,5 @@ async def read_iv(ctx):
             message = message + f'\nDropped {dropped_counter} records.'
     await ctx.send(message)
     return
-
+"""
 bot.run(TOKEN)
