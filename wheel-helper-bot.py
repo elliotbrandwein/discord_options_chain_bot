@@ -19,7 +19,7 @@ bot = commands.Bot(command_prefix='>')  # change character here
 # by default bot commands only accept one token, the first after the command
 # can accept multiple tokens by using *args instead of ticka
 # then query = " ".join(args[:]) >>> query = query.strip()
-
+"""
 weekly_stinks = []
 with open('weekly_stonks.csv', 'r') as f: 
     read_deez_nutz = csv.reader(f)
@@ -27,7 +27,7 @@ with open('weekly_stonks.csv', 'r') as f:
         if row[0] == 'ticka':
             continue
         weekly_stinks.append(row[0])
-
+"""
 def danny_divito(rum_ham, ticka=None):
     ascii_table = PrettyTable()
     ascii_table.field_names = rum_ham.columns
