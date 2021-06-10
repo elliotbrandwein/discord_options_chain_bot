@@ -28,6 +28,8 @@ with open('weekly_stonks.csv', 'r') as f:
             continue
         weekly_stinks.append(row[0])
 """
+
+
 def danny_divito(rum_ham, ticka=None):
     ascii_table = PrettyTable()
     ascii_table.field_names = rum_ham.columns
@@ -38,8 +40,9 @@ def danny_divito(rum_ham, ticka=None):
         ascii_table.add_row(rum_ham.iloc[i])
     return ascii_table
 
+
 @bot.command(name="safe")
-async def safe_getter(ctx,*args):
+async def safe_getter(ctx, *args):
     tokens = args[:]
     if len(tokens) != 2:
         await ctx.send("funtionality is >safe [call/put] [ticka]")
@@ -47,11 +50,13 @@ async def safe_getter(ctx,*args):
     else:
         try:
             async with ctx.typing():
-                data = yahoo.get_todays_safe_options(tokens[1],option=tokens[0])
+                data = yahoo.get_todays_safe_options(
+                    tokens[1], option=tokens[0])
                 ascii_table = danny_divito(data)
             await ctx.send(f"```\n{ascii_table.get_string()}\n```")
         except:
             await ctx.send("There was an error please try again")
+
 
 @bot.command(name='puts')
 async def put_getter(ctx, ticka):
@@ -97,7 +102,8 @@ async def safe_contracts(ctx, *args):
         return
     elif len(tokens) == 2:
         async with ctx.typing():
-            data = yahoo.get_band(tokens[1], start_date=datetime.date.today(), band_age=20)
+            data = yahoo.get_band(
+                tokens[1], start_date=datetime.date.today(), band_age=20)
         if tokens[0] == 'call' or tokens[0] == 'calls':
             async with ctx.typing():
                 calls = yahoo.return_calls(tokens[1])
@@ -126,8 +132,8 @@ async def safe_contracts(ctx, *args):
 # that lil dude will check the puts of all weeklies on a strict schedule, and output the current highest IV
 #    to a file, wich is read here
 ####
-## using the static weekly stinks
-## runtime too long
+# using the static weekly stinks
+# runtime too long
 """
 @bot.command(name='high-v')
 async def read_iv(ctx):
