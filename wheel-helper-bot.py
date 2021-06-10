@@ -93,7 +93,26 @@ async def call_getter(ctx, ticka):
     except:
         await ctx.send("There was an error please try again")
 
-
+@bot.command(name="meme")
+async def get_memes(ctx,*args):
+    try:
+        async with ctx.typing():
+            tokens = args[:]
+            if len(tokens) == 0:
+                ascii_table = PrettyTable() 
+                ascii_table.field_names = ['Ticka', "Opening Price", "Current Price", "Change"]
+                ascii_table.add_rows(yahoo.get_memes())
+                await ctx.send(f"```\n {ascii_table.get_string()}```\n")
+            elif len(tokens) == 2:
+                if tokens[0].lower() == "add":
+                    yahoo.add_meme(tokens[1].upper())
+                elif tokens[0].lower == "remove" or tokens[0] == "delete":
+                    yahoo.remove_meme(tokens[1].upper())
+            else:
+                await ctx.return("I don't know how to do that") 
+        return
+    except:
+        await ctx.send("something went very very wrong")
 @bot.command(name='bands')
 async def safe_contracts(ctx, *args):
     tokens = args[:]

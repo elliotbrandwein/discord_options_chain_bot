@@ -23,12 +23,16 @@ def get_yesterdays_price(stock):
     x = si.get_data(stock,start_date = date)
     return x['adjclose'][0]
 
+def get_end_of_day_price(stock):
+    date  = dt.date.today().strftime("%m/%d/%Y")
+    x = si.get_data(stock,start_date = date)
+    return x['adjclose'][0]
+
 def pre_market():
     start_time = dt.time(9, 30)
     current_time = dt.datetime.now().time()
     current_time = time(current_time.hour, current_time.minute)
     return current_time < start_time
-
 
 def get_expiry_from_name(c_name, ticker):
     offset = len(ticker)
@@ -245,57 +249,66 @@ def get_price_and_day_change(stocks):
                 output.append(temp)
         elif pre_market():
             for stock in stocks:
-                print(si.get_premarket_price(stock))
+                temp = []
+                current_price = si.get_premarket_price(stock)
+                open_price = get_end_of_day_price(stock)
+                temp.append(stock)
+                temp.append(open_price)
+                temp.append(current_price)
+                temp.append(current_price- open_price)
+                output.append(temp)
         else:
             for stock in stocks:
-                print(si.get_postmarket_price(stock))
+                temp = []
+                current_price = si.get_postmarket_price(stock)
+                open_price = get_end_of_day_price(stock)
+                temp.append(stock)
+                temp.append(open_price)
+                temp.append(current_price)
+                temp.append(current_price- open_price)
+                output.append(temp)
     except:
         output.append("Something Went wrong")
     return output
 
-
+def get_memes():
+    return get_price_and_day_change(_meme_cache)
+    
 if __name__ == '__main__':
-    # print("please give me a ticka") # will replace with input from bot
-    # ticka = input()
-    # print("call or put")
-    # option = input()
-    # option = option.lower()
-    # if option == "band":
-    #     print(get_band(ticka))
-    # elif option == "call":
-    #     ascii_table = PrettyTable()
-    #     data = return_calls(ticka)
-    #     if len(data) == 0:
-    #         print("no calls found for ticka", ticka)
-    #     else:
-    #         data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-    #         ascii_table.field_names = data.columns
-    #         for i in range(len(data.index)):
-    #             if i == 4:
-    #                 ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
-    #             ascii_table.add_row(data.iloc[i])
-    #         print(ascii_table.get_string())
+    print("please give me a ticka") # will replace with input from bot
+    ticka = input()
+    print("call or put")
+    option = input()
+    option = option.lower()
+    if option == "band":
+        print(get_band(ticka))
+    elif option == "call":
+        ascii_table = PrettyTable()
+        data = return_calls(ticka)
+        if len(data) == 0:
+            print("no calls found for ticka", ticka)
+        else:
+            data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+            ascii_table.field_names = data.columns
+            for i in range(len(data.index)):
+                if i == 4:
+                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
+                ascii_table.add_row(data.iloc[i])
+            print(ascii_table.get_string())
 
-    # elif option == "put":
-    #         ascii_table = PrettyTable()
-    #         data = return_puts(ticka)
-    #         if len(data) == 0:
-    #             print("no puts found for ticka", ticka)
-    #         else:
-    #             data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-    #             ascii_table.field_names = data.columns
-    #             for i in range(len(data.index)):
-    #                 if i == 4:
-    #                     ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
-    #                 ascii_table.add_row(data.iloc[i])
-    #             print(ascii_table.get_string())
-    # else:
-    #     print("you're an idiot")
-    ascii_table = PrettyTable() 
-    ascii_table.field_names = ['Ticka', "Opening Price", "Current Price", "Change"]
-    add_meme("GME")
-    add_meme("BB")
-    for row in get_price_and_day_change(_meme_cache):
-        print(row)
-    # (get_price_and_day_change(
-    #     ["GME", "BB", "KODK", "BBBY", "GEO", "JNUG"]))
+    elif option == "put":
+            ascii_table = PrettyTable()
+            data = return_puts(ticka)
+            if len(data) == 0:
+                print("no puts found for ticka", ticka)
+            else:
+                data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+                ascii_table.field_names = data.columns
+                for i in range(len(data.index)):
+                    if i == 4:
+                        ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
+                    ascii_table.add_row(data.iloc[i])
+                print(ascii_table.get_string())
+    else:
+        print("you're an idiot")
+  
