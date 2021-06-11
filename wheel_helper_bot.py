@@ -101,7 +101,7 @@ async def get_memes(ctx,*args):
             if len(tokens) == 0:
                 ascii_table = PrettyTable() 
                 ascii_table.field_names = ['Ticka', "Opening Price", "Current Price", "Change"]
-                ascii_table.add_rows(yahoo.get_memes())
+                await ascii_table.add_rows(yahoo.get_memes())
                 await ctx.send(f"```\n {ascii_table.get_string()}```\n")
             elif len(tokens) == 2:
                 if tokens[0].lower() == "add":
@@ -114,7 +114,7 @@ async def get_memes(ctx,*args):
                 await ctx.send("I don't know how to do that", args,tokens) 
         return
     except:
-        await ctx.send("something went very very wrong")
+        await ctx.send("something went very very wrong", args)
 @bot.command(name='bands')
 async def safe_contracts(ctx, *args):
     tokens = args[:]

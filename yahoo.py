@@ -9,7 +9,6 @@ import pandas as pd
 import dateutil.parser as dp
 import yahoo_fin
 import math
-import wheel_helper_bot as whb
 def trading_hours():
     start_time = dt.time(9, 30)
     end_time = dt.time(16, 0)
@@ -314,11 +313,11 @@ if __name__ == '__main__':
         else:
             print("you're an idiot")
     else:
-        whb.get_memes(None,())
-        # add_meme("GME")
-        # ascii_table = PrettyTable() 
-        # ascii_table.field_names = ['Ticka', "Opening Price", "Current Price", "Change"]
-        # add_meme("GME")
-        # ascii_table.add_rows(get_memes())
-        # print(ascii_table.get_string())
+        # whb.get_memes(None,())
+        add_meme("GME")
+        ascii_table = PrettyTable() 
+        ascii_table.field_names = ['Ticka', "Opening Price", "Current Price", "Change"]
+        add_meme("GME")
+        ascii_table.add_rows(get_memes())
+        print(ascii_table.get_string())
 
