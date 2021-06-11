@@ -109,7 +109,7 @@ async def get_memes(ctx,*args):
                 elif tokens[0].lower == "remove" or tokens[0] == "delete":
                     yahoo.remove_meme(tokens[1].upper())
             else:
-                await ctx.return("I don't know how to do that") 
+                await ctx.send("I don't know how to do that") 
         return
     except:
         await ctx.send("something went very very wrong")
