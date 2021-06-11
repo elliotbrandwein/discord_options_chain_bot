@@ -106,10 +106,12 @@ async def get_memes(ctx,*args):
             elif len(tokens) == 2:
                 if tokens[0].lower() == "add":
                     yahoo.add_meme(tokens[1].upper())
+                    await ctx.send("added")
                 elif tokens[0].lower == "remove" or tokens[0] == "delete":
                     yahoo.remove_meme(tokens[1].upper())
+                    await ctx.send("removed")
             else:
-                await ctx.send("I don't know how to do that") 
+                await ctx.send("I don't know how to do that", args,tokens) 
         return
     except:
         await ctx.send("something went very very wrong")
@@ -117,7 +119,7 @@ async def get_memes(ctx,*args):
 async def safe_contracts(ctx, *args):
     tokens = args[:]
     if len(tokens) < 2:
-        await ctx.send("funtionality is >bands [call/put] [ticka]")
+        await ctx.send("functionality is >bands [call/put] [ticka]")
         return
     elif len(tokens) == 2:
         async with ctx.typing():

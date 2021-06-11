@@ -9,8 +9,7 @@ import pandas as pd
 import dateutil.parser as dp
 import yahoo_fin
 import math
-
-
+import wheel_helper_bot as whb
 def trading_hours():
     start_time = dt.time(9, 30)
     end_time = dt.time(16, 0)
@@ -275,32 +274,21 @@ def get_memes():
     return get_price_and_day_change(_meme_cache)
     
 if __name__ == '__main__':
-    print("please give me a ticka") # will replace with input from bot
-    ticka = input()
-    print("call or put")
-    option = input()
-    option = option.lower()
-    if option == "band":
-        print(get_band(ticka))
-    elif option == "call":
-        ascii_table = PrettyTable()
-        data = return_calls(ticka)
-        if len(data) == 0:
-            print("no calls found for ticka", ticka)
-        else:
-            data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
-            ascii_table.field_names = data.columns
-            for i in range(len(data.index)):
-                if i == 4:
-                    ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
-                ascii_table.add_row(data.iloc[i])
-            print(ascii_table.get_string())
-
-    elif option == "put":
+    print("meme or real?")
+    resp = input()
+    if resp == "real":
+        print("please give me a ticka") # will replace with input from bot
+        ticka = input()
+        print("call or put")
+        option = input()
+        option = option.lower()
+        if option == "band":
+            print(get_band(ticka))
+        elif option == "call":
             ascii_table = PrettyTable()
-            data = return_puts(ticka)
+            data = return_calls(ticka)
             if len(data) == 0:
-                print("no puts found for ticka", ticka)
+                print("no calls found for ticka", ticka)
             else:
                 data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
                 ascii_table.field_names = data.columns
@@ -309,6 +297,28 @@ if __name__ == '__main__':
                         ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
                     ascii_table.add_row(data.iloc[i])
                 print(ascii_table.get_string())
+
+        elif option == "put":
+                ascii_table = PrettyTable()
+                data = return_puts(ticka)
+                if len(data) == 0:
+                    print("no puts found for ticka", ticka)
+                else:
+                    data = data.drop(columns=['Contract Name', 'Last Trade Date', 'Change', 'Implied Volatility', '% Change', 'Open Interest'])
+                    ascii_table.field_names = data.columns
+                    for i in range(len(data.index)):
+                        if i == 4:
+                            ascii_table.add_row(["TICKA:",ticka.upper(),"-","-","CURRENT PRICE:", round(price_cache[ticka],4)])
+                        ascii_table.add_row(data.iloc[i])
+                    print(ascii_table.get_string())
+        else:
+            print("you're an idiot")
     else:
-        print("you're an idiot")
-  
+        whb.get_memes(None,())
+        # add_meme("GME")
+        # ascii_table = PrettyTable() 
+        # ascii_table.field_names = ['Ticka', "Opening Price", "Current Price", "Change"]
+        # add_meme("GME")
+        # ascii_table.add_rows(get_memes())
+        # print(ascii_table.get_string())
+
