@@ -93,14 +93,16 @@ async def call_getter(ctx, ticka):
     except:
         await ctx.send("There was an error please try again")
 
+
 @bot.command(name="meme")
-async def get_memes(ctx,*args):
+async def get_memes(ctx, *args):
     try:
         async with ctx.typing():
             tokens = args[:]
             if len(tokens) == 0:
-                ascii_table = PrettyTable() 
-                ascii_table.field_names = ['Ticka', "Opening Price", "Current Price", "Change"]
+                ascii_table = PrettyTable()
+                ascii_table.field_names = [
+                    'Ticka', "Opening Price", "Current Price", "Change", "Percent Change"]
                 ascii_table.add_rows(yahoo.get_memes())
                 await ctx.send(f"```\n {ascii_table.get_string()}```\n")
             elif len(tokens) == 2:
@@ -111,10 +113,40 @@ async def get_memes(ctx,*args):
                     yahoo.remove_meme(tokens[1].upper())
                     await ctx.send("removed")
             else:
-                await ctx.send("I don't know how to do that", args,tokens) 
+                await ctx.send("I don't know how to do that", args, tokens)
         return
     except:
         await ctx.send("something went very very wrong", [args[:]])
+
+
+@bot.command(name="memes")
+async def get_memes(ctx):
+    ascii_table = PrettyTable()
+    ascii_table.field_names = ['Ticka', "Opening Price",
+                               "Current Price", "Change", "Percent Change"]
+    ascii_table.add_rows(yahoo.get_memes())
+    await ctx.send(f"```\n {ascii_table.get_string()}```\n")
+
+
+@bot.command(name="vix")
+async def vix_up(ctx, *args):
+    try:
+        async with ctx.typing():
+            tokens = args[:]
+            if len(tokens) == 0:
+                await ctx.send(f"```\n {yahoo.check_vxx()}```\n")
+            elif len(tokens) == 2:
+                if tokens[0].lower() == "up":
+                    await ctx.send(f"```\n {yahoo.get_vxx(up=True)}```\n")
+                elif tokens[0].lower == "remove" or tokens[0] == "delete":
+                    await ctx.send(f"```\n {yahoo.get_vxx(up=False)}```\n")
+            else:
+                await ctx.send("I don't know how to do that", args, tokens)
+        return
+    except:
+        await ctx.send("something went very very wrong", [args[:]])
+
+
 @bot.command(name='bands')
 async def safe_contracts(ctx, *args):
     tokens = args[:]

@@ -9,14 +9,32 @@ import pandas as pd
 import dateutil.parser as dp
 import yahoo_fin
 import math
+import vxx
+
+
+def get_vxx(up=True):
+    if(up):
+        return vxx.message
+    else:
+        return vxx.message[::-1]
 
 
 def trading_hours():
+    day_of_week = dt.datetime.today().weekday()
+    if day_of_week == 6 or day_of_week == 5:
+        return False
     start_time = dt.time(9, 30)
     end_time = dt.time(16, 0)
     current_time = dt.datetime.now().time()
     current_time = time(current_time.hour, current_time.minute)
     return current_time >= start_time and current_time < end_time
+
+
+def trading_day():
+    day_of_week = dt.datetime.today().weekday()
+    if day_of_week == 6 or day_of_week == 5:
+        return False
+    return True
 
 
 def get_yesterdays_price(stock):
@@ -26,12 +44,21 @@ def get_yesterdays_price(stock):
 
 
 def get_end_of_day_price(stock):
-    date = dt.date.today().strftime("%m/%d/%Y")
+    day_of_week = dt.datetime.today().weekday()
+    if day_of_week == 6:
+        date = (dt.date.today() - timedelta(2)).strftime("%m/%d/%Y")
+    elif day_of_week == 5:
+        date = (dt.date.today() - timedelta(1)).strftime("%m/%d/%Y")
+    else:
+        date = dt.date.today().strftime("%m/%d/%Y")
     x = si.get_data(stock, start_date=date)
     return x['adjclose'][0]
 
 
 def pre_market():
+    day_of_week = dt.datetime.today().weekday()
+    if day_of_week == 6 or day_of_week == 5:
+        return False
     start_time = dt.time(9, 30)
     current_time = dt.datetime.now().time()
     current_time = time(current_time.hour, current_time.minute)
@@ -276,6 +303,20 @@ def get_memes():
     return get_price_and_day_change(_meme_cache)
 
 
+def check_vxx():
+    stock = "VXX"
+    if trading_hours() or not trading_day():
+        current_price = si.get_live_price(stock)
+        open_price = get_end_of_day_price(stock)
+    elif pre_market():
+        current_price = si.get_premarket_price(stock)
+        open_price = get_yesterdays_price(stock)
+    else:
+        current_price = si.get_postmarket_price(stock)
+        open_price = get_end_of_day_price(stock)
+    return get_vxx(up=current_price > open_price)
+
+
 if __name__ == '__main__':
     print("meme or real?")
     resp = input()
@@ -321,12 +362,10 @@ if __name__ == '__main__':
         else:
             print("you're an idiot")
     else:
-        # whb.get_memes(None,())
         add_meme("GME")
         add_meme("CLOV")
         ascii_table = PrettyTable()
         ascii_table.field_names = [
             'Ticka', "Opening Price", "Current Price", "Change", "Percent Change"]
-        add_meme("GME")
         ascii_table.add_rows(get_memes())
         print(ascii_table.get_string())
