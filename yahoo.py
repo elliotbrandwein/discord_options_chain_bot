@@ -13,7 +13,7 @@ import vxx
 
 
 def get_vxx(up=True):
-    if(up):
+    if up == True:
         return vxx.message
     else:
         return vxx.message[::-1]

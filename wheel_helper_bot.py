@@ -109,7 +109,7 @@ async def get_memes(ctx, *args):
                 if tokens[0].lower() == "add":
                     yahoo.add_meme(tokens[1].upper())
                     await ctx.send("added")
-                elif tokens[0].lower == "remove" or tokens[0] == "delete":
+                elif tokens[0].lower() == "remove" or tokens[0] == "delete":
                     yahoo.remove_meme(tokens[1].upper())
                     await ctx.send("removed")
             else:
@@ -138,7 +138,7 @@ async def vix_up(ctx, *args):
             elif len(tokens) == 2:
                 if tokens[0].lower() == "up":
                     await ctx.send(f"```\n {yahoo.get_vxx(up=True)}```\n")
-                elif tokens[0].lower == "remove" or tokens[0] == "delete":
+                elif tokens[0].lower() == "down":
                     await ctx.send(f"```\n {yahoo.get_vxx(up=False)}```\n")
             else:
                 await ctx.send("I don't know how to do that", args, tokens)
