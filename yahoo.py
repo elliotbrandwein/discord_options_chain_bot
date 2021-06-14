@@ -37,7 +37,7 @@ def trading_day():
     return True
 
 
-def get_yesterdays_price(stock): 
+def get_last_trading_day_price(stock): 
         day_of_week = dt.datetime.today().weekday()
         if day_of_week == 0:
             time_delta = 3
@@ -288,7 +288,7 @@ def get_price_and_day_change(stocks):
                 open_price = get_end_of_day_price(stock)
             elif pre_market():
                 current_price = si.get_premarket_price(stock)
-                open_price = get_yesterdays_price(stock)
+                open_price = get_last_trading_day_price(stock)
             else:
                 current_price = si.get_postmarket_price(stock)
                 open_price = get_end_of_day_price(stock)
@@ -317,7 +317,7 @@ def check_vxx():
         open_price = get_end_of_day_price(stock)
     elif pre_market():
         current_price = si.get_premarket_price(stock)
-        open_price = get_yesterdays_price(stock)
+        open_price = get_last_trading_day_price(stock)
     else:
         current_price = si.get_postmarket_price(stock)
         open_price = get_end_of_day_price(stock)
