@@ -37,10 +37,17 @@ def trading_day():
     return True
 
 
-def get_yesterdays_price(stock):
-    date = (dt.date.today() - timedelta(days=1)).strftime("%m/%d/%Y")
-    x = si.get_data(stock, start_date=date)
-    return x['adjclose'][0]
+def get_yesterdays_price(stock): 
+        day_of_week = dt.datetime.today().weekday()
+        if day_of_week == 0:
+            time_delta = 3
+        elif day_of_week == 6:
+            time_delta = 2
+        else:
+            time_delta = 1
+        date = (dt.date.today() - timedelta(days=time_delta)).strftime("%m/%d/%Y")
+        x = si.get_data(stock, start_date=date)
+        return x['adjclose'][0]
 
 
 def get_end_of_day_price(stock):
